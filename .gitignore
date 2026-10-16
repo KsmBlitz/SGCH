@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+htmlcov/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+
+# Supabase local
+supabase/.branches/
+supabase/.temp/
+
+# Secretos y entorno
+.env
+.env.*
+!.env.example
+
+# Claude Code: preferencias personales y ajustes locales
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
