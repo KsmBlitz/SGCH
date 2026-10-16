@@ -18,3 +18,4 @@ Cambiar una decisión exige un ADR nuevo que reemplace al anterior; nunca se edi
 | [0012](0012-redondeo-por-concepto-y-reserva-con-techo.md) | Redondeo por concepto, reserva con techo y precisiones del cálculo | aceptada |
 | [0013](0013-vs-code-y-claude-code-en-lugar-de-cursor.md) | VS Code con Claude Code en lugar de Cursor (reemplaza parcialmente la 0001) | aceptada |
 | [0014](0014-aislamiento-por-claves-compuestas-y-privilegios-minimos.md) | Aislamiento por claves compuestas, privilegios mínimos y escritura de dinero solo por la API | aceptada |
+| [0015](0015-api-con-sql-explicito-idempotencia-en-base-y-organizacion-desde-el-jwt.md) | API con SQL explícito, idempotencia en la base y organización desde el JWT | aceptada |

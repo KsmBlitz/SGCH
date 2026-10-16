@@ -20,3 +20,10 @@ paths:
   mano, más una propiedad Hypothesis del invariante.
 - Desde la etapa 4: errores HTTP con formato `{"error": {"code", "message", "details"}}`, prefijo
   `/api/v1`, `Idempotency-Key` en operaciones de dinero y `X-Request-ID` en logs.
+- La capa impura vive en `app/casos_uso/` (SQL explícito con `text()`, sin ORM) y recibe siempre el
+  `Contexto`: toda consulta filtra por `ctx.organizacion_id` (la API omite RLS). Las operaciones de
+  dinero pasan por `core.idempotencia.ejecutar_idempotente` y declaran el usuario con
+  `Bd.transaccion(usuario_id)` para que la auditoría lo registre.
+- Pruebas de integración en `tests/api/` contra la base local (`make db-start`); se revierten al
+  terminar. En CI corren con `SGCH_REQUIRE_DB=1`, donde la ausencia de base es un fallo.
+

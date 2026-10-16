@@ -6,7 +6,7 @@ SB  := pnpm exec supabase
 export PATH := $(HOME)/.local/share/fnm/aliases/default/bin:$(HOME)/.local/bin:$(PATH)
 
 .DEFAULT_GOAL := help
-.PHONY: help doctor api-install api-test api-lint api-fmt api-typecheck check db-start db-stop db-reset db-test db-check
+.PHONY: help doctor api api-install api-test api-lint api-fmt api-typecheck check db-start db-stop db-reset db-test db-check
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-15s %s\n", $$1, $$2}'
@@ -14,10 +14,13 @@ help: ## Muestra esta ayuda
 doctor: ## Verifica las herramientas del entorno
 	@./scripts/doctor.sh
 
+api: ## Levanta la API en el puerto 8000 (necesita apps/api/.env y make db-start)
+	cd $(API) && $(UV) run uvicorn app.main:app --reload --port 8000
+
 api-install: ## Instala dependencias de la API
 	cd $(API) && $(UV) sync
 
-api-test: ## Ejecuta las pruebas de la API
+api-test: ## Ejecuta las pruebas de la API (las de integración se omiten sin make db-start)
 	cd $(API) && $(UV) run pytest
 
 api-lint: ## Lint y formato (verificación) de la API

@@ -349,6 +349,8 @@ La API en FastAPI concentra todo cálculo con efecto económico; la web nunca ca
 | GET | `/unidades/{id}/estado-cuenta` | Estado de cuenta de una unidad | Residente de la unidad y superiores |
 | GET | `/comunidades/{id}/exportar` | Exportación completa de datos | Administrador |
 
+**Estado de la etapa 4.** Implementados: `GET /me`, `POST /comunidades/{id}/periodos`, `POST .../periodos/{aaaa-mm}/gastos`, `POST /gastos/{id}/anular`, `POST .../periodos/{aaaa-mm}/validar`, `POST .../periodos/{aaaa-mm}/cerrar`, `POST /pagos` y `POST /pagos/{id}/anular`. El resto de la tabla se construye en las etapas 5 y 6. La organización se resuelve desde el JWT (cabecera `X-Organizacion-Id` si el usuario tiene varias) y las operaciones de dinero exigen `Idempotency-Key` (ADR 0015).
+
 **Tareas programadas** (Railway Cron, en UTC, con fechas calculadas en America/Santiago): recordatorios de cobranza, cálculo diario de intereses informativos, alertas de períodos sin cerrar y respaldo lógico semanal.
 
 **Integraciones.**

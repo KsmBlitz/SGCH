@@ -41,6 +41,7 @@ Responde siempre en español de Chile.
 ```bash
 make check          # lint + formato + mypy + pytest (lo mismo que CI). Correr antes de dar algo por terminado
 make api-test       # solo pytest
+make api           # levanta la API en :8000 (apps/api/.env desde .env.example)
 make db-check       # supabase db reset + supabase test db (pgTAP); requiere `make db-start` y Docker
 make api-fmt        # ruff format + ruff check --fix
 make doctor         # herramientas instaladas y faltantes
@@ -53,12 +54,15 @@ cd apps/api && uv run pytest tests/test_cierre.py -k reserva   # una prueba punt
 ## Estructura
 
 ```text
-apps/api/            Python 3.12 + uv. Hoy: motor de cálculo puro, sin BD ni FastAPI todavía
-  app/services/      prorrateo, cierre, cobranza, intereses, cargos (tipos compartidos)
+apps/api/            Python 3.12 + uv. FastAPI sobre el motor de cálculo puro
+  app/services/      prorrateo, cierre, cobranza, intereses, cargos (puro: sin BD ni reloj)
+  app/casos_uso/     SQL explícito y orquestación: períodos, gastos, pagos (impuro)
+  app/core/          config, JWT, contexto de organización, idempotencia, errores
+  app/routers/       endpoints /api/v1; app/schemas/ cuerpos de entrada; app/db/ conexión
   app/utils/         rut, formato (CLP, fechas, zona America/Santiago)
   tests/             pytest + Hypothesis; comunidad_ficticia.py es el fixture principal
 supabase/            migrations/, tests/database/ (pgTAP) y seed.sql; Supabase CLI vía pnpm
-docs/adr/            ADR 0001-0014
+docs/adr/            ADR 0001-0015
 .claude/rules/       reglas por carpeta (api, supabase, web)
 .claude/skills/      flujos del proyecto: regla-negocio, nueva-migracion, nuevo-adr, revisar-cambios
 ```
@@ -71,8 +75,8 @@ Aún no existe `apps/web/` (Next.js, etapa 5).
 |---|---|---|
 | 0-2 | Entorno, esqueleto, motor de cálculo | Hecho |
 | 3 | Esquema Supabase, RLS, pgTAP (requiere Docker Engine en WSL) | Hecho |
-| 4 | API FastAPI: JWT, organización, idempotencia, cierre y pagos | Siguiente |
-| 5 | Web Next.js: login OTP, cartera, comunidad, unidades, gastos | |
+| 4 | API FastAPI: JWT, organización, idempotencia, cierre y pagos | Hecho |
+| 5 | Web Next.js: login OTP, cartera, comunidad, unidades, gastos | Siguiente |
 | 6 | PDF, correo, cartola, rendición, exportación, portal del residente | |
 | 7 | Staging, Sentry, respaldos y piloto | |
 

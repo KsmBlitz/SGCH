@@ -17,3 +17,14 @@ def formatear_clp(monto_clp: int) -> str:
 def formatear_fecha(fecha: date) -> str:
     """dd-mm-aaaa."""
     return fecha.strftime("%d-%m-%Y")
+
+
+def mes_desde_texto(texto: str) -> date:
+    """ "2026-10" -> primer día del mes contable (2026-10-01)."""
+    try:
+        anio, mes = texto.split("-")
+        if len(anio) != 4 or len(mes) != 2:
+            raise ValueError
+        return date(int(anio), int(mes), 1)
+    except ValueError as exc:
+        raise ValueError("El período debe tener el formato aaaa-mm.") from exc

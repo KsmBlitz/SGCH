@@ -3,13 +3,22 @@ name = "sgch-api"
 version = "0.1.0"
 description = "API de SGCH: toda la lógica con efecto económico (sección 9 del documento maestro)"
 requires-python = ">=3.12,<3.13"
-dependencies = []
+dependencies = [
+    "fastapi>=0.143.2",
+    "psycopg[binary]>=3.3.6",
+    "pydantic-settings>=2.16.0",
+    "pyjwt[crypto]>=2.15.1",
+    "sqlalchemy[asyncio]>=2.1.4",
+    "uvicorn[standard]>=0.54.0",
+]
 
 [dependency-groups]
 dev = [
+    "httpx>=0.28.1",
     "hypothesis>=6.100",
     "mypy>=1.11",
     "pytest>=8.3",
+    "pytest-asyncio>=1.4.0",
     "ruff>=0.6",
 ]
 
@@ -32,3 +41,6 @@ strict = true
 testpaths = ["tests"]
 pythonpath = ["."]
 addopts = "-q --strict-markers"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = ["bd: necesita la base local de Supabase (make db-start)"]
