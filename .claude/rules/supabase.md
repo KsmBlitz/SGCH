@@ -20,3 +20,12 @@ paths:
   escribe nada de la B, y el residente solo ve sus unidades.
 - Después de migrar: `supabase db reset` y `supabase test db` en verde, luego regenera los tipos.
 - `seed.sql` solo contiene datos ficticios; nunca datos reales de personas.
+- Privilegios: `anon` no recibe nada y `authenticated` solo `SELECT` en tablas con efecto económico
+  (ADR 0014). Cada migración concede explícitamente lo que corresponde; los defaults de `public` ya
+  no otorgan permisos a la web.
+- Las referencias entre tablas usan claves compuestas con la comunidad (y la organización o la
+  unidad cuando aplica) para que una fila no cruce clientes. El padre declara `unique (id, ...)`.
+- Pruebas: `supabase/tests/database/000_ayudas.sql` define `tests.u()`, `tests.como()` y
+  `tests.crear_escenario()` (dos organizaciones con una fila en cada tabla). Una tabla nueva suma
+  su fila al escenario y su archivo `<tabla>_test.sql`.
+- Las funciones nuevas no son ejecutables por defecto: concede `execute` solo a quien lo necesita.

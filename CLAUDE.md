@@ -41,6 +41,7 @@ Responde siempre en español de Chile.
 ```bash
 make check          # lint + formato + mypy + pytest (lo mismo que CI). Correr antes de dar algo por terminado
 make api-test       # solo pytest
+make db-check       # supabase db reset + supabase test db (pgTAP); requiere `make db-start` y Docker
 make api-fmt        # ruff format + ruff check --fix
 make doctor         # herramientas instaladas y faltantes
 cd apps/api && uv run pytest tests/test_cierre.py -k reserva   # una prueba puntual
@@ -56,20 +57,21 @@ apps/api/            Python 3.12 + uv. Hoy: motor de cálculo puro, sin BD ni Fa
   app/services/      prorrateo, cierre, cobranza, intereses, cargos (tipos compartidos)
   app/utils/         rut, formato (CLP, fechas, zona America/Santiago)
   tests/             pytest + Hypothesis; comunidad_ficticia.py es el fixture principal
-docs/adr/            ADR 0001-0013
+supabase/            migrations/, tests/database/ (pgTAP) y seed.sql; Supabase CLI vía pnpm
+docs/adr/            ADR 0001-0014
 .claude/rules/       reglas por carpeta (api, supabase, web)
 .claude/skills/      flujos del proyecto: regla-negocio, nueva-migracion, nuevo-adr, revisar-cambios
 ```
 
-Aún no existen `apps/web/` (Next.js, etapa 5) ni `supabase/` (etapa 3).
+Aún no existe `apps/web/` (Next.js, etapa 5).
 
 ## Plan por etapas
 
 | Etapa | Contenido | Estado |
 |---|---|---|
 | 0-2 | Entorno, esqueleto, motor de cálculo | Hecho |
-| 3 | Esquema Supabase, RLS, pgTAP (requiere Docker Engine en WSL) | Siguiente |
-| 4 | API FastAPI: JWT, organización, idempotencia, cierre y pagos | |
+| 3 | Esquema Supabase, RLS, pgTAP (requiere Docker Engine en WSL) | Hecho |
+| 4 | API FastAPI: JWT, organización, idempotencia, cierre y pagos | Siguiente |
 | 5 | Web Next.js: login OTP, cartera, comunidad, unidades, gastos | |
 | 6 | PDF, correo, cartola, rendición, exportación, portal del residente | |
 | 7 | Staging, Sentry, respaldos y piloto | |

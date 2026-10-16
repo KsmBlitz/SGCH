@@ -295,6 +295,7 @@ Toda fila de negocio pertenece a una organización y a una comunidad, y el aisla
 | `fondo_reserva_movimientos` | Aportes y usos del fondo | Uso requiere motivo y comprobante |
 | `rendiciones` | Informe mensual y su aprobación | Estado, aprobado\_por, comentarios |
 | `documentos` | Reglamento, actas, contratos | Ruta en Storage |
+| `grupo_prorrateo_unidades` | Miembros de un grupo de prorrateo | Prorrateo por unidad; la suma por grupo debe ser 1 al cerrar |
 | `auditoria` | Registro inmutable de cambios con efecto económico | Solo inserción; sin update ni delete |
 
 **Reglas de diseño.**
@@ -304,6 +305,8 @@ Toda fila de negocio pertenece a una organización y a una comunidad, y el aisla
 - Fechas de negocio como `date`; marcas de tiempo como `timestamptz`. Zona horaria de negocio: America/Santiago.
 - Borrado lógico (`anulado_en`, `anulado_por`, `motivo`) en toda tabla con efecto económico.
 - Restricciones en la base de datos (checks, uniques, foreign keys) además de la validación en la API.
+- Claves foráneas compuestas: toda tabla referencia `(comunidad_id, organizacion_id)` y, según el caso, la unidad, de modo que una fila no puede mezclar clientes aunque la escriba el rol que omite RLS (ADR 0014).
+- `accesos_comunidad`: el rol `residente` exige `unidad_id`; el rol `comite` no lleva unidad.
 
 **Seguridad con RLS.**
 
@@ -311,6 +314,10 @@ Toda fila de negocio pertenece a una organización y a una comunidad, y el aisla
 - Dos funciones auxiliares `security definer`: `es_miembro_org(org_id)` y `tiene_acceso_comunidad(comunidad_id, roles[])`.
 - El residente solo ve las filas de sus unidades; el comité ve toda su comunidad pero no escribe dinero; el equipo del administrador ve todas las comunidades de su organización.
 - La tabla `auditoria` no tiene políticas de update ni delete para ningún rol.
+- Privilegios mínimos: `anon` no accede a nada; `authenticated` solo lee las tablas con efecto económico. Desde la web solo se escriben `personas`, `unidad_personas`, `proveedores` y `documentos`; el dinero lo escribe la API (ADR 0014).
+- El comité no ve personas ni la cartola bancaria. El residente ve los cargos de sus unidades solo cuando el período está emitido, y no ve gastos, fondo de reserva ni rendiciones.
+- La base impide cerrar un período si los prorrateos de la comunidad (o de un grupo usado por un extraordinario) no suman 1, y rechaza gastos o cargos nuevos en períodos cerrados.
+- La API declara el usuario de cada escritura con `set_config('app.usuario_id', ..., true)` para la auditoría.
 - Storage privado, con rutas `{organizacion_id}/{comunidad_id}/{carpeta}/{archivo}` y políticas que validan pertenencia.
 - Prueba automatizada obligatoria: un usuario de la organización A no lee ni escribe nada de la organización B por ninguna vía (web, API ni Storage).
 

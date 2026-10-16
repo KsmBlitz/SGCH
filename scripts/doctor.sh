@@ -22,7 +22,11 @@ revisar git      "sudo apt install -y git" si
 revisar docker   "etapa 3: Docker Engine en WSL (docs.docker.com/engine/install/ubuntu)"
 revisar node     "etapa 3: Node.js 22"
 revisar pnpm     "etapa 5: corepack enable pnpm"
-revisar supabase "etapa 3: Supabase CLI"
+if pnpm exec supabase --version >/dev/null 2>&1; then
+  printf "  ok      %-10s %s\n" "supabase" "$(pnpm exec supabase --version 2>&1 | head -1) (pnpm)"
+else
+  printf "  falta   %-10s %s\n" "supabase" "etapa 3: pnpm install (Supabase CLI como dependencia del proyecto)"
+fi
 revisar gh       "opcional: sudo apt install -y gh"
 
 case "$(pwd)" in

@@ -1,0 +1,11 @@
+{
+  "name": "sgch",
+  "private": true,
+  "packageManager": "pnpm@12.11.2",
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "supabase": "^2.121.0"
+  }
+}

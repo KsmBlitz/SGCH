@@ -1,8 +1,12 @@
 API := apps/api
 UV  := uv
+SB  := pnpm exec supabase
+
+# Node (fnm) y uv viven en el espacio de usuario; así make los encuentra sin shell interactivo.
+export PATH := $(HOME)/.local/share/fnm/aliases/default/bin:$(HOME)/.local/bin:$(PATH)
 
 .DEFAULT_GOAL := help
-.PHONY: help doctor api-install api-test api-lint api-fmt api-typecheck check
+.PHONY: help doctor api-install api-test api-lint api-fmt api-typecheck check db-start db-stop db-reset db-test db-check
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-15s %s\n", $$1, $$2}'
@@ -25,4 +29,18 @@ api-fmt: ## Formatea y corrige la API
 api-typecheck: ## Revisión de tipos de la API
 	cd $(API) && $(UV) run mypy app tests
 
-check: api-lint api-typecheck api-test ## Todo lo que corre en CI
+db-start: ## Levanta Supabase local (Postgres, Auth y Storage en Docker)
+	$(SB) start
+
+db-stop: ## Detiene Supabase local
+	$(SB) stop
+
+db-reset: ## Recrea la base local con las migraciones y el seed
+	$(SB) db reset
+
+db-test: ## Pruebas pgTAP de la base (requiere Supabase local levantado)
+	$(SB) test db
+
+db-check: db-reset db-test ## Migraciones desde cero y pruebas pgTAP (lo que corre CI)
+
+check: api-lint api-typecheck api-test ## Python: lo que corre en CI para apps/api
